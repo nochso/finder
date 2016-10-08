@@ -85,6 +85,36 @@ func TestNotNameRegex(t *testing.T) {
 	}
 }
 
+func TestFiles(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").Files(),
+			[]string{
+				"test-fixtures/1.log",
+				"test-fixtures/1.txt",
+				"test-fixtures/d1/1",
+			},
+		},
+	}
+	for _, tc := range tests {
+		tc.Test(t)
+	}
+}
+
+func TestDirs(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").Dirs(),
+			[]string{
+				"test-fixtures/d1",
+			},
+		},
+	}
+	for _, tc := range tests {
+		tc.Test(t)
+	}
+}
+
 func (tc testCase) Test(t *testing.T) {
 	files, errs := tc.finder.ToSlice()
 	if len(errs) > 0 {

@@ -6,11 +6,20 @@ import (
 	"regexp"
 )
 
+type itemType int
+
+const (
+	typeAll itemType = iota
+	typeFile
+	typeDir
+)
+
 type Finder struct {
 	dirs        []string
 	names       []Matcher
 	notNames    []Matcher
 	setupErrors []error
+	itype       itemType
 }
 
 type Matcher func(Item) bool
@@ -79,7 +88,20 @@ func (f *Finder) NotNameRegex(n string) *Finder {
 	return f
 }
 
+func (f *Finder) Files() *Finder {
+	f.itype = typeFile
+	return f
+}
+
+func (f *Finder) Dirs() *Finder {
+	f.itype = typeDir
+	return f
+}
+
 func (f *Finder) match(i Item) bool {
+	if (f.itype == typeDir && !i.IsDir()) || (f.itype == typeFile && i.IsDir()) {
+		return false
+	}
 	match := true
 	if len(f.names) > 0 {
 		match = false
