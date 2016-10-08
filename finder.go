@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-type itemType int
+type itemType uint8
 
 const (
 	typeAll itemType = iota
