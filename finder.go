@@ -3,11 +3,16 @@ package finder
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 )
 
 type Finder struct {
-	dirs []string
+	dirs        []string
+	names       []Matcher
+	setupErrors []error
 }
+
+type Matcher func(Item) bool
 
 func New() *Finder {
 	return &Finder{}
@@ -16,6 +21,32 @@ func New() *Finder {
 func (f *Finder) In(directories ...string) *Finder {
 	f.dirs = append(f.dirs, directories...)
 	return f
+}
+
+func (f *Finder) NameRegex(n string) *Finder {
+	re, err := regexp.Compile(n)
+	if err != nil {
+		f.setupErrors = append(f.setupErrors, err)
+		return f
+	}
+	f.names = append(f.names, func(i Item) bool {
+		return re.MatchString(i.Name())
+	})
+	return f
+}
+
+func (f *Finder) match(i Item) bool {
+	match := true
+	if len(f.names) > 0 {
+		match = false
+		for _, n := range f.names {
+			if n(i) {
+				match = true
+				break
+			}
+		}
+	}
+	return match
 }
 
 func (f *Finder) Each(fn func(Item)) []error {
@@ -28,7 +59,10 @@ func (f *Finder) Each(fn func(Item)) []error {
 		if err != nil {
 			return err
 		}
-		fn(newItem(info, path))
+		item := newItem(info, path)
+		if f.match(item) {
+			fn(item)
+		}
 		return nil
 	}
 	for _, dir = range f.dirs {

@@ -31,6 +31,18 @@ func TestIn(t *testing.T) {
 	}
 }
 
+func TestNameRegex(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").NameRegex("\\.log$"),
+			[]string{"test-fixtures/1.log"},
+		},
+	}
+	for _, tc := range tests {
+		tc.Test(t)
+	}
+}
+
 func (tc testCase) Test(t *testing.T) {
 	files, errs := tc.finder.ToSlice()
 	if len(errs) > 0 {
