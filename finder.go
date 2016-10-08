@@ -24,28 +24,42 @@ func (f *Finder) In(directories ...string) *Finder {
 }
 
 func (f *Finder) Name(n string) *Finder {
-	_, err := filepath.Match(n, "foo")
-	if err != nil {
-		f.setupErrors = append(f.setupErrors, err)
-		return f
+	matcher := f.name(n)
+	if matcher != nil {
+		f.names = append(f.names, matcher)
 	}
-	f.names = append(f.names, func(i Item) bool {
-		ok, _ := filepath.Match(n, i.Name())
-		return ok
-	})
 	return f
 }
 
+func (f *Finder) name(n string) Matcher {
+	_, err := filepath.Match(n, "foo")
+	if err != nil {
+		f.setupErrors = append(f.setupErrors, err)
+		return nil
+	}
+	return func(i Item) bool {
+		ok, _ := filepath.Match(n, i.Name())
+		return ok
+	}
+}
+
 func (f *Finder) NameRegex(n string) *Finder {
+	matcher := f.nameRegex(n)
+	if matcher != nil {
+		f.names = append(f.names, matcher)
+	}
+	return f
+}
+
+func (f *Finder) nameRegex(n string) Matcher {
 	re, err := regexp.Compile(n)
 	if err != nil {
 		f.setupErrors = append(f.setupErrors, err)
-		return f
+		return nil
 	}
-	f.names = append(f.names, func(i Item) bool {
+	return func(i Item) bool {
 		return re.MatchString(i.Name())
-	})
-	return f
+	}
 }
 
 func (f *Finder) match(i Item) bool {
