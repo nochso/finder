@@ -23,6 +23,19 @@ func (f *Finder) In(directories ...string) *Finder {
 	return f
 }
 
+func (f *Finder) Name(n string) *Finder {
+	_, err := filepath.Match(n, "foo")
+	if err != nil {
+		f.setupErrors = append(f.setupErrors, err)
+		return f
+	}
+	f.names = append(f.names, func(i Item) bool {
+		ok, _ := filepath.Match(n, i.Name())
+		return ok
+	})
+	return f
+}
+
 func (f *Finder) NameRegex(n string) *Finder {
 	re, err := regexp.Compile(n)
 	if err != nil {

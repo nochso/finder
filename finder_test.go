@@ -31,6 +31,18 @@ func TestIn(t *testing.T) {
 	}
 }
 
+func TestName(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").Name("*.log"),
+			[]string{"test-fixtures/1.log"},
+		},
+	}
+	for _, tc := range tests {
+		tc.Test(t)
+	}
+}
+
 func TestNameRegex(t *testing.T) {
 	tests := []testCase{
 		{
