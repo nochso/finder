@@ -70,6 +70,21 @@ func TestNotName(t *testing.T) {
 	}
 }
 
+func TestNotNameRegex(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").NotNameRegex("\\.(log|txt)$"),
+			[]string{
+				"test-fixtures/d1/1",
+				"test-fixtures/d1",
+			},
+		},
+	}
+	for _, tc := range tests {
+		tc.Test(t)
+	}
+}
+
 func (tc testCase) Test(t *testing.T) {
 	files, errs := tc.finder.ToSlice()
 	if len(errs) > 0 {

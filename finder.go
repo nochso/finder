@@ -71,6 +71,14 @@ func (f *Finder) NotName(n string) *Finder {
 	return f
 }
 
+func (f *Finder) NotNameRegex(n string) *Finder {
+	matcher := f.nameRegex(n)
+	if matcher != nil {
+		f.notNames = append(f.notNames, matcher)
+	}
+	return f
+}
+
 func (f *Finder) match(i Item) bool {
 	match := true
 	if len(f.names) > 0 {
