@@ -98,7 +98,7 @@ func (f *Finder) Each(fn func(Item)) []error {
 			errs = append(errs, err)
 		}
 	}
-	return errs
+	return append(f.setupErrors, errs...)
 }
 
 func (f *Finder) ToSlice() ([]Item, []error) {
