@@ -9,6 +9,7 @@ import (
 type Finder struct {
 	dirs        []string
 	names       []Matcher
+	notNames    []Matcher
 	setupErrors []error
 }
 
@@ -62,6 +63,14 @@ func (f *Finder) nameRegex(n string) Matcher {
 	}
 }
 
+func (f *Finder) NotName(n string) *Finder {
+	matcher := f.name(n)
+	if matcher != nil {
+		f.notNames = append(f.notNames, matcher)
+	}
+	return f
+}
+
 func (f *Finder) match(i Item) bool {
 	match := true
 	if len(f.names) > 0 {
@@ -70,6 +79,17 @@ func (f *Finder) match(i Item) bool {
 			if n(i) {
 				match = true
 				break
+			}
+		}
+	}
+	if !match {
+		return match
+	}
+	if len(f.notNames) > 0 {
+		for _, matcher := range f.notNames {
+			if matcher(i) {
+				match = false
+				continue
 			}
 		}
 	}
