@@ -14,6 +14,7 @@ const (
 	typeDir
 )
 
+// Finder contains options for a file/directory search.
 type Finder struct {
 	dirs        []string
 	names       []Matcher
@@ -22,17 +23,23 @@ type Finder struct {
 	itype       itemType
 }
 
+// Matcher checks whether an Item matches.
 type Matcher func(Item) bool
 
+// New returns a new finder.
+//
+// By default it will search for both files and directories.
 func New() *Finder {
 	return &Finder{}
 }
 
+// In searches in the given list of directories.
 func (f *Finder) In(directories ...string) *Finder {
 	f.dirs = append(f.dirs, directories...)
 	return f
 }
 
+// Name matches a file or directory name using path/filepath.Match
 func (f *Finder) Name(n string) *Finder {
 	matcher := f.name(n)
 	if matcher != nil {
@@ -53,6 +60,7 @@ func (f *Finder) name(n string) Matcher {
 	}
 }
 
+// NameRegex matches a file or directory name using package regexp.
 func (f *Finder) NameRegex(n string) *Finder {
 	matcher := f.nameRegex(n)
 	if matcher != nil {
@@ -72,6 +80,7 @@ func (f *Finder) nameRegex(n string) Matcher {
 	}
 }
 
+// NotName excludes a file or directory name using path/filepath.Match
 func (f *Finder) NotName(n string) *Finder {
 	matcher := f.name(n)
 	if matcher != nil {
@@ -80,6 +89,7 @@ func (f *Finder) NotName(n string) *Finder {
 	return f
 }
 
+// NotNameRegex excludes a file or directory name using package regexp.
 func (f *Finder) NotNameRegex(n string) *Finder {
 	matcher := f.nameRegex(n)
 	if matcher != nil {
@@ -88,11 +98,13 @@ func (f *Finder) NotNameRegex(n string) *Finder {
 	return f
 }
 
+// Files makes the finder return files only.
 func (f *Finder) Files() *Finder {
 	f.itype = typeFile
 	return f
 }
 
+// Dirs makes the finder return directories only.
 func (f *Finder) Dirs() *Finder {
 	f.itype = typeDir
 	return f
@@ -126,6 +138,7 @@ func (f *Finder) match(i Item) bool {
 	return match
 }
 
+// Each calls func fn with each found item.
 func (f *Finder) Each(fn func(Item)) []error {
 	var errs []error
 	var dir string
@@ -151,6 +164,7 @@ func (f *Finder) Each(fn func(Item)) []error {
 	return append(f.setupErrors, errs...)
 }
 
+// ToSlice returns a slice of all found items.
 func (f *Finder) ToSlice() ([]Item, []error) {
 	var l []Item
 	errs := f.Each(func(file Item) {
