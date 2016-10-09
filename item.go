@@ -6,6 +6,17 @@ import "path"
 // ItemSlice is a list of items.
 type ItemSlice []Item
 
+// Size returns the sum of all file sizes.
+func (il ItemSlice) Size() uint64 {
+	var size uint64
+	for _, i := range il {
+		if !i.IsDir() {
+			size += uint64(i.Size())
+		}
+	}
+	return size
+}
+
 type Item struct {
 	os.FileInfo
 	base string
