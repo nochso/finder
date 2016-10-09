@@ -4,6 +4,7 @@
 [![Released under MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/release/nochso/finder.svg?maxAge=2592000)](https://github.com/nochso/finder/releases)
 [![SemVer 2.0.0](https://img.shields.io/badge/SemVer-2.0.0-blue.svg)][semver]
+[![Go Report Card](https://goreportcard.com/badge/github.com/nochso/finder)](https://goreportcard.com/report/github.com/nochso/finder)
 
 A fluent interface around [path/filepath.Walk].
 
