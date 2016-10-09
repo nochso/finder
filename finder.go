@@ -259,7 +259,7 @@ func (f *Finder) Each(fn func(Item)) []error {
 }
 
 // ToSlice returns a slice of all found items.
-func (f *Finder) ToSlice() ([]Item, []error) {
+func (f *Finder) ToSlice() (ItemSlice, []error) {
 	var l []Item
 	errs := f.Each(func(file Item) {
 		l = append(l, file)

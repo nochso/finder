@@ -3,6 +3,9 @@ package finder
 import "os"
 import "path"
 
+// ItemSlice is a list of items.
+type ItemSlice []Item
+
 type Item struct {
 	os.FileInfo
 	base string
