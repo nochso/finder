@@ -31,6 +31,34 @@ func TestIn(t *testing.T) {
 	}
 }
 
+func TestPath(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").Path("d1"),
+			[]string{
+				"test-fixtures/d1",
+				"test-fixtures/d1/1",
+			},
+		},
+		{
+			New().In("test-fixtures").Path("x"),
+			[]string{},
+		},
+		{
+			New().In("test-fixtures").Path("*"),
+			[]string{
+				"test-fixtures/1.log",
+				"test-fixtures/1.txt",
+				"test-fixtures/d1",
+				"test-fixtures/d1/1",
+			},
+		},
+	}
+	for _, tc := range tests {
+		tc.Test(t)
+	}
+}
+
 func TestName(t *testing.T) {
 	tests := []testCase{
 		{

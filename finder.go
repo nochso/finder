@@ -21,6 +21,7 @@ const (
 type Finder struct {
 	dirs        []string
 	names       []Matcher
+	paths       []Matcher
 	notNames    []Matcher
 	setupErrors []error
 	itype       itemType
@@ -39,6 +40,26 @@ func New() *Finder {
 // In searches in the given list of directories.
 func (f *Finder) In(directories ...string) *Finder {
 	f.dirs = append(f.dirs, directories...)
+	return f
+}
+
+// Path narrows down the folders to be searched using gobwas/glob
+//
+// p is matched against the items RelPath()
+// See https://github.com/gobwas/glob
+func (f *Finder) Path(p string) *Finder {
+	g, err := glob.Compile(p, os.PathSeparator)
+	if err != nil {
+		f.setupErrors = append(f.setupErrors, err)
+		return nil
+	}
+	matcher := func(i Item) bool {
+		if i.IsDir() {
+			return g.Match(i.RelPath())
+		}
+		return g.Match(filepath.Dir(i.RelPath()))
+	}
+	f.paths = append(f.paths, matcher)
 	return f
 }
 
@@ -124,6 +145,25 @@ func (f *Finder) match(i Item) error {
 		return errNoMatch
 	}
 	var match error
+	if len(f.paths) > 0 {
+		if i.IsDir() {
+			for _, p := range f.paths {
+				if !p(i) {
+					return errSkipDir
+				}
+			}
+		} else {
+			match = errNoMatch
+			for _, p := range f.paths {
+				if p(i) {
+					match = nil
+				}
+			}
+			if match == errNoMatch {
+				return match
+			}
+		}
+	}
 	if len(f.names) > 0 {
 		match = errNoMatch
 		for _, n := range f.names {
