@@ -158,7 +158,11 @@ func (f *Finder) Each(fn func(Item)) []error {
 		if err != nil {
 			return err
 		}
-		item := newItem(info, path)
+		relDir, err := filepath.Rel(dir, path)
+		if err != nil {
+			return err
+		}
+		item := newItem(info, dir, relDir)
 		match := f.match(item)
 		switch match {
 		case nil:
