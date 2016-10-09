@@ -217,7 +217,7 @@ func (f *Finder) Each(fn func(Item)) []error {
 	}
 	for _, dir = range f.dirs {
 		err := filepath.Walk(dir, walker)
-		if err != nil {
+		if err != nil && err != errSkipDir {
 			errs = append(errs, err)
 		}
 	}
