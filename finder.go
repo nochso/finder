@@ -156,6 +156,7 @@ func (f *Finder) Dirs() *Finder {
 	return f
 }
 
+var isMatch error = nil
 var errNoMatch = errors.New("Item did not match")
 var errSkipDir = filepath.SkipDir
 
@@ -165,15 +166,15 @@ func (f *Finder) match(i Item) error {
 	}
 	var match error
 	match = f.matchPaths(i)
-	if match != nil {
+	if match != isMatch {
 		return match
 	}
 	match = f.matchNotPaths(i)
-	if match != nil {
+	if match != isMatch {
 		return match
 	}
 	match = f.matchNames(i)
-	if match != nil {
+	if match != isMatch {
 		return match
 	}
 	return f.matchNotNames(i)
@@ -181,7 +182,7 @@ func (f *Finder) match(i Item) error {
 
 func (f *Finder) matchPaths(i Item) error {
 	if len(f.paths) == 0 {
-		return nil
+		return isMatch
 	}
 	if i.IsDir() {
 		for _, p := range f.paths {
@@ -189,12 +190,12 @@ func (f *Finder) matchPaths(i Item) error {
 				return errSkipDir
 			}
 		}
-		return nil
+		return isMatch
 	}
 	match := errNoMatch
 	for _, p := range f.paths {
 		if p(i) {
-			match = nil
+			match = isMatch
 		}
 	}
 	return match
@@ -202,7 +203,7 @@ func (f *Finder) matchPaths(i Item) error {
 
 func (f *Finder) matchNotPaths(i Item) error {
 	if len(f.notPaths) == 0 {
-		return nil
+		return isMatch
 	}
 	if i.IsDir() {
 		for _, p := range f.notPaths {
@@ -210,23 +211,23 @@ func (f *Finder) matchNotPaths(i Item) error {
 				return errSkipDir
 			}
 		}
-		return nil
+		return isMatch
 	}
 	for _, p := range f.notPaths {
 		if p(i) {
 			return errNoMatch
 		}
 	}
-	return nil
+	return isMatch
 }
 
 func (f *Finder) matchNames(i Item) error {
 	if len(f.names) == 0 {
-		return nil
+		return isMatch
 	}
 	for _, n := range f.names {
 		if n(i) {
-			return nil
+			return isMatch
 		}
 	}
 	return errNoMatch
@@ -234,14 +235,14 @@ func (f *Finder) matchNames(i Item) error {
 
 func (f *Finder) matchNotNames(i Item) error {
 	if len(f.notNames) == 0 {
-		return nil
+		return isMatch
 	}
 	for _, n := range f.notNames {
 		if n(i) {
 			return errNoMatch
 		}
 	}
-	return nil
+	return isMatch
 }
 
 // Each calls func fn with each found item.
@@ -262,7 +263,7 @@ func (f *Finder) Each(fn func(Item)) []error {
 		item := newItem(info, dir, relDir)
 		match := f.match(item)
 		switch match {
-		case nil:
+		case isMatch:
 			fn(item)
 			return nil
 		case errNoMatch:
