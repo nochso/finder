@@ -48,19 +48,25 @@ func (f *Finder) In(directories ...string) *Finder {
 // p is matched against the items RelPath()
 // See https://github.com/gobwas/glob
 func (f *Finder) Path(p string) *Finder {
+	matcher := f.path(p)
+	if matcher != nil {
+		f.paths = append(f.paths, matcher)
+	}
+	return f
+}
+
+func (f *Finder) path(p string) Matcher {
 	g, err := glob.Compile(p, os.PathSeparator)
 	if err != nil {
 		f.setupErrors = append(f.setupErrors, err)
 		return nil
 	}
-	matcher := func(i Item) bool {
+	return func(i Item) bool {
 		if i.IsDir() {
 			return g.Match(i.RelPath())
 		}
 		return g.Match(filepath.Dir(i.RelPath()))
 	}
-	f.paths = append(f.paths, matcher)
-	return f
 }
 
 // Name matches a file or directory name using gobwas/glob
