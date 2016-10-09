@@ -37,6 +37,17 @@ func TestName(t *testing.T) {
 			New().In("test-fixtures").Name("*.log"),
 			[]string{"test-fixtures/1.log"},
 		},
+		{
+			New().In("test-fixtures").Name("?.log"),
+			[]string{"test-fixtures/1.log"},
+		},
+		{
+			New().In("test-fixtures").Name("?.{log,txt}"),
+			[]string{
+				"test-fixtures/1.log",
+				"test-fixtures/1.txt",
+			},
+		},
 	}
 	for _, tc := range tests {
 		tc.Test(t)

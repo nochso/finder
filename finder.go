@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"github.com/gobwas/glob"
 )
 
 type itemType uint8
@@ -39,7 +40,9 @@ func (f *Finder) In(directories ...string) *Finder {
 	return f
 }
 
-// Name matches a file or directory name using path/filepath.Match
+// Name matches a file or directory name using gobwas/glob
+//
+// See https://github.com/gobwas/glob
 func (f *Finder) Name(n string) *Finder {
 	matcher := f.name(n)
 	if matcher != nil {
@@ -49,14 +52,13 @@ func (f *Finder) Name(n string) *Finder {
 }
 
 func (f *Finder) name(n string) Matcher {
-	_, err := filepath.Match(n, "foo")
+	g, err := glob.Compile(n, os.PathSeparator)
 	if err != nil {
 		f.setupErrors = append(f.setupErrors, err)
 		return nil
 	}
 	return func(i Item) bool {
-		ok, _ := filepath.Match(n, i.Name())
-		return ok
+		return g.Match(i.Name())
 	}
 }
 
@@ -80,7 +82,9 @@ func (f *Finder) nameRegex(n string) Matcher {
 	}
 }
 
-// NotName excludes a file or directory name using path/filepath.Match
+// NotName excludes a file or directory name using gobwas/glob
+//
+// See https://github.com/gobwas/glob
 func (f *Finder) NotName(n string) *Finder {
 	matcher := f.name(n)
 	if matcher != nil {
