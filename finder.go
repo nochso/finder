@@ -177,16 +177,10 @@ func (f *Finder) match(i Item) error {
 	if (f.itype == typeDir && !i.IsDir()) || (f.itype == typeFile && i.IsDir()) {
 		return ErrNoMatch
 	}
-	if f.maxDepth != -1 || f.minDepth != 0 {
-		depth := i.Depth()
-		if f.minDepth != 0 && depth < f.minDepth {
-			return ErrNoMatch
-		}
-		if f.maxDepth != -1 && depth > f.maxDepth {
-			return ErrSkipDir
-		}
+	match := f.matchDepth(i)
+	if match != IsMatch {
+		return match
 	}
-	var match error
 	match = f.matchPaths(i)
 	if match != IsMatch {
 		return match
@@ -200,6 +194,20 @@ func (f *Finder) match(i Item) error {
 		return match
 	}
 	return f.matchNotNames(i)
+}
+
+func (f *Finder) matchDepth(i Item) error {
+	if f.maxDepth == -1 && f.minDepth == 0 {
+		return IsMatch
+	}
+	depth := i.Depth()
+	if f.minDepth != 0 && depth < f.minDepth {
+		return ErrNoMatch
+	}
+	if f.maxDepth != -1 && depth > f.maxDepth {
+		return ErrSkipDir
+	}
+	return IsMatch
 }
 
 func (f *Finder) matchPaths(i Item) error {
