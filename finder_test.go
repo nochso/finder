@@ -59,11 +59,15 @@ func TestIn(t *testing.T) {
 				"test-fixtures/1.txt",
 				"test-fixtures/CVS",
 				"test-fixtures/CVS/1",
+				"test-fixtures/CVS/.config",
 			},
 		},
 		{
 			New().In("test-fixtures/CVS"),
-			[]string{"test-fixtures/CVS/1"},
+			[]string{
+				"test-fixtures/CVS/1",
+				"test-fixtures/CVS/.config",
+			},
 		},
 	}
 	test(t, tests)
@@ -76,6 +80,7 @@ func TestPath(t *testing.T) {
 			[]string{
 				"test-fixtures/CVS",
 				"test-fixtures/CVS/1",
+				"test-fixtures/CVS/.config",
 			},
 		},
 		{
@@ -89,6 +94,7 @@ func TestPath(t *testing.T) {
 				"test-fixtures/1.txt",
 				"test-fixtures/CVS",
 				"test-fixtures/CVS/1",
+				"test-fixtures/CVS/.config",
 			},
 		},
 	}
@@ -146,6 +152,7 @@ func TestNotName(t *testing.T) {
 			[]string{
 				"test-fixtures/CVS/1",
 				"test-fixtures/CVS",
+				"test-fixtures/CVS/.config",
 			},
 		},
 	}
@@ -158,6 +165,7 @@ func TestNotNameRegex(t *testing.T) {
 			New().In("test-fixtures").NotNameRegex("\\.(log|txt)$"),
 			[]string{
 				"test-fixtures/CVS/1",
+				"test-fixtures/CVS/.config",
 				"test-fixtures/CVS",
 			},
 		},
@@ -173,6 +181,7 @@ func TestFiles(t *testing.T) {
 				"test-fixtures/1.log",
 				"test-fixtures/1.txt",
 				"test-fixtures/CVS/1",
+				"test-fixtures/CVS/.config",
 			},
 		},
 	}
@@ -197,6 +206,7 @@ func TestMinDepth(t *testing.T) {
 			New().In("test-fixtures").MinDepth(2),
 			[]string{
 				"test-fixtures/CVS/1",
+				"test-fixtures/CVS/.config",
 			},
 		},
 	}
@@ -236,6 +246,21 @@ func TestIgnoreVCS(t *testing.T) {
 			[]string{
 				"test-fixtures/1.txt",
 				"test-fixtures/1.log",
+			},
+		},
+	}
+	test(t, tests)
+}
+
+func TestIgnoreDots(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").IgnoreDots(),
+			[]string{
+				"test-fixtures/1.log",
+				"test-fixtures/1.txt",
+				"test-fixtures/CVS",
+				"test-fixtures/CVS/1",
 			},
 		},
 	}

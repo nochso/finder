@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 
 	"github.com/gobwas/glob"
 )
@@ -159,6 +160,14 @@ func (f *Finder) IgnoreVCS() *Finder {
 	matcher := func(i Item) bool {
 		_, exists := exNames[i.Name()]
 		return exists
+	}
+	f.notPaths = append(f.notPaths, matcher)
+	return f
+}
+
+func (f *Finder) IgnoreDots() *Finder {
+	matcher := func(i Item) bool {
+		return strings.HasPrefix(i.Name(), ".")
 	}
 	f.notPaths = append(f.notPaths, matcher)
 	return f
