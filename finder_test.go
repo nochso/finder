@@ -216,3 +216,15 @@ func TestMaxDepth(t *testing.T) {
 	}
 	test(t, tests)
 }
+
+func TestSize(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").Files().Size(func(size int64) bool { return size > 0 }),
+			[]string{
+				"test-fixtures/1.txt",
+			},
+		},
+	}
+	test(t, tests)
+}

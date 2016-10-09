@@ -24,6 +24,7 @@ type Finder struct {
 	paths       []Matcher
 	notPaths    []Matcher
 	notNames    []Matcher
+	sizes       []Matcher
 	minDepth    int
 	maxDepth    int
 	setupErrors []error
@@ -168,6 +169,17 @@ func (f *Finder) MinDepth(min int) *Finder {
 	return f
 }
 
+func (f *Finder) Size(fn func(size int64) bool) *Finder {
+	matcher := func(i Item) bool {
+		if i.IsDir() {
+			return true
+		}
+		return fn(i.Size())
+	}
+	f.sizes = append(f.sizes, matcher)
+	return f
+}
+
 var IsMatch error = nil
 var ErrNoMatch = errors.New("Item did not match")
 var ErrSkipDir = filepath.SkipDir
@@ -178,6 +190,10 @@ func (f *Finder) match(i Item) error {
 		return ErrNoMatch
 	}
 	match := f.matchDepth(i)
+	if match != IsMatch {
+		return match
+	}
+	match = f.matchSize(i)
 	if match != IsMatch {
 		return match
 	}
@@ -194,6 +210,18 @@ func (f *Finder) match(i Item) error {
 		return match
 	}
 	return f.matchNotNames(i)
+}
+
+func (f *Finder) matchSize(i Item) error {
+	if len(f.sizes) == 0 {
+		return IsMatch
+	}
+	for _, s := range f.sizes {
+		if s(i) {
+			return IsMatch
+		}
+	}
+	return ErrNoMatch
 }
 
 func (f *Finder) matchDepth(i Item) error {
