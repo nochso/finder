@@ -59,6 +59,21 @@ func TestPath(t *testing.T) {
 	}
 }
 
+func TestNotPath(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").NotPath("d1"),
+			[]string{
+				"test-fixtures/1.log",
+				"test-fixtures/1.txt",
+			},
+		},
+	}
+	for _, tc := range tests {
+		tc.Test(t)
+	}
+}
+
 func TestName(t *testing.T) {
 	tests := []testCase{
 		{

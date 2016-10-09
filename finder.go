@@ -22,6 +22,7 @@ type Finder struct {
 	dirs        []string
 	names       []Matcher
 	paths       []Matcher
+	notPaths    []Matcher
 	notNames    []Matcher
 	setupErrors []error
 	itype       itemType
@@ -51,6 +52,18 @@ func (f *Finder) Path(p string) *Finder {
 	matcher := f.path(p)
 	if matcher != nil {
 		f.paths = append(f.paths, matcher)
+	}
+	return f
+}
+
+// NotPath excludes folders from the search using gobwas/glob
+//
+// p is matched against the item's RelPath()
+// See https://github.com/gobwas/glob
+func (f *Finder) NotPath(p string) *Finder {
+	matcher := f.path(p)
+	if matcher != nil {
+		f.notPaths = append(f.notPaths, matcher)
 	}
 	return f
 }
@@ -167,6 +180,21 @@ func (f *Finder) match(i Item) error {
 			}
 			if match == errNoMatch {
 				return match
+			}
+		}
+	}
+	if len(f.notPaths) > 0 {
+		if i.IsDir() {
+			for _, p := range f.notPaths {
+				if p(i) {
+					return errSkipDir
+				}
+			}
+		} else {
+			for _, p := range f.notPaths {
+				if p(i) {
+					return errNoMatch
+				}
 			}
 		}
 	}
