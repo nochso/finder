@@ -10,6 +10,7 @@ type testCase struct {
 	paths  []string
 }
 
+// test runs a slice of test cases.
 func test(t *testing.T, cases []testCase) {
 	for _, tc := range cases {
 		tc.Test(t)
@@ -157,6 +158,7 @@ func TestDirs(t *testing.T) {
 	test(t, tests)
 }
 
+// Test runs a single test case.
 func (tc testCase) Test(t *testing.T) {
 	files, errs := tc.finder.ToSlice()
 	if len(errs) > 0 {
@@ -168,6 +170,7 @@ func (tc testCase) Test(t *testing.T) {
 	}
 }
 
+// matchFiles asserts that only the expected paths occur in the given files.
 func matchFiles(t *testing.T, paths []string, files []Item) error {
 	m := make(map[string]bool)
 	for _, path := range paths {
