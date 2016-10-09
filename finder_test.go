@@ -190,3 +190,29 @@ func TestDirs(t *testing.T) {
 	}
 	test(t, tests)
 }
+
+func TestMinDepth(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").MinDepth(2),
+			[]string{
+				"test-fixtures/d1/1",
+			},
+		},
+	}
+	test(t, tests)
+}
+
+func TestMaxDepth(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").MaxDepth(1),
+			[]string{
+				"test-fixtures/1.log",
+				"test-fixtures/1.txt",
+				"test-fixtures/d1",
+			},
+		},
+	}
+	test(t, tests)
+}
