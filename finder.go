@@ -164,61 +164,84 @@ func (f *Finder) match(i Item) error {
 		return errNoMatch
 	}
 	var match error
-	if len(f.paths) > 0 {
-		if i.IsDir() {
-			for _, p := range f.paths {
-				if !p(i) {
-					return errSkipDir
-				}
-			}
-		} else {
-			match = errNoMatch
-			for _, p := range f.paths {
-				if p(i) {
-					match = nil
-				}
-			}
-			if match == errNoMatch {
-				return match
-			}
-		}
-	}
-	if len(f.notPaths) > 0 {
-		if i.IsDir() {
-			for _, p := range f.notPaths {
-				if p(i) {
-					return errSkipDir
-				}
-			}
-		} else {
-			for _, p := range f.notPaths {
-				if p(i) {
-					return errNoMatch
-				}
-			}
-		}
-	}
-	if len(f.names) > 0 {
-		match = errNoMatch
-		for _, n := range f.names {
-			if n(i) {
-				match = nil
-				break
-			}
-		}
-	}
-	if match == errNoMatch {
+	match = f.matchPaths(i)
+	if match != nil {
 		return match
 	}
-	if len(f.notNames) > 0 {
-		for _, matcher := range f.notNames {
-			if matcher(i) {
-				match = errNoMatch
-				continue
+	match = f.matchNotPaths(i)
+	if match != nil {
+		return match
+	}
+	match = f.matchNames(i)
+	if match != nil {
+		return match
+	}
+	return f.matchNotNames(i)
+}
+
+func (f *Finder) matchPaths(i Item) error {
+	if len(f.paths) == 0 {
+		return nil
+	}
+	if i.IsDir() {
+		for _, p := range f.paths {
+			if !p(i) {
+				return errSkipDir
 			}
+		}
+		return nil
+	}
+	match := errNoMatch
+	for _, p := range f.paths {
+		if p(i) {
+			match = nil
 		}
 	}
 	return match
+}
+
+func (f *Finder) matchNotPaths(i Item) error {
+	if len(f.notPaths) == 0 {
+		return nil
+	}
+	if i.IsDir() {
+		for _, p := range f.notPaths {
+			if p(i) {
+				return errSkipDir
+			}
+		}
+		return nil
+	}
+	for _, p := range f.notPaths {
+		if p(i) {
+			return errNoMatch
+		}
+	}
+	return nil
+}
+
+func (f *Finder) matchNames(i Item) error {
+	if len(f.names) == 0 {
+		return nil
+	}
+	for _, n := range f.names {
+		if n(i) {
+			return nil
+		}
+	}
+	return errNoMatch
+}
+
+func (f *Finder) matchNotNames(i Item) error {
+	if len(f.notNames) == 0 {
+		return nil
+	}
+	for _, n := range f.notNames {
+		if n(i) {
+			return errNoMatch
+		}
+	}
+	return nil
 }
 
 // Each calls func fn with each found item.
