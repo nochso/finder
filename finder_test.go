@@ -10,6 +10,12 @@ type testCase struct {
 	paths  []string
 }
 
+func test(t *testing.T, cases []testCase) {
+	for _, tc := range cases {
+		tc.Test(t)
+	}
+}
+
 func TestIn(t *testing.T) {
 	tests := []testCase{
 		{
@@ -26,9 +32,7 @@ func TestIn(t *testing.T) {
 			[]string{"test-fixtures/d1/1"},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestPath(t *testing.T) {
@@ -54,9 +58,7 @@ func TestPath(t *testing.T) {
 			},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestNotPath(t *testing.T) {
@@ -69,9 +71,7 @@ func TestNotPath(t *testing.T) {
 			},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestName(t *testing.T) {
@@ -92,9 +92,7 @@ func TestName(t *testing.T) {
 			},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestNameRegex(t *testing.T) {
@@ -104,9 +102,7 @@ func TestNameRegex(t *testing.T) {
 			[]string{"test-fixtures/1.log"},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestNotName(t *testing.T) {
@@ -119,9 +115,7 @@ func TestNotName(t *testing.T) {
 			},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestNotNameRegex(t *testing.T) {
@@ -134,9 +128,7 @@ func TestNotNameRegex(t *testing.T) {
 			},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestFiles(t *testing.T) {
@@ -150,9 +142,7 @@ func TestFiles(t *testing.T) {
 			},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func TestDirs(t *testing.T) {
@@ -164,9 +154,7 @@ func TestDirs(t *testing.T) {
 			},
 		},
 	}
-	for _, tc := range tests {
-		tc.Test(t)
-	}
+	test(t, tests)
 }
 
 func (tc testCase) Test(t *testing.T) {
