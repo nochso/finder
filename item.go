@@ -1,7 +1,10 @@
 package finder
 
-import "os"
-import "path"
+import (
+	"os"
+	"path"
+	"strings"
+)
 
 // ItemSlice is a list of items.
 type ItemSlice []Item
@@ -29,6 +32,13 @@ func newItem(info os.FileInfo, base, path string) Item {
 		base:     base,
 		path:     path,
 	}
+}
+
+// Depth returns the depth of the item based on RelPath.
+// It starts at 1 (one).
+func (f Item) Depth() int {
+	rp := f.RelPath()
+	return strings.Count(rp, string(os.PathSeparator)) + 1
 }
 
 // Path returns the path including the folder it was found in.
