@@ -6,7 +6,7 @@
 [![SemVer 2.0.0](https://img.shields.io/badge/SemVer-2.0.0-blue.svg)][semver]
 [![Go Report Card](https://goreportcard.com/badge/github.com/nochso/finder)](https://goreportcard.com/report/github.com/nochso/finder)
 
-A fluent interface around [path/filepath.Walk].
+A fluent interface around Go's [path/filepath.Walk].
 
 - Inspired by [symfony/finder]
 - Single external dependency on [gobwas/glob] for glob path matching
@@ -21,19 +21,6 @@ go get github.com/nochso/finder
 Usage
 -----
 See [documentation on godoc][godoc].
-
-To do
------
-
-- Limit by folder depth
-- Limit by modification date
-- Limit by file content
-- Limit by file size
-- Ignore dot files
-- Ignore common VCS folders
-- Sort by..?
-- Filter using user supplied func
-- Command line utility as sane replacement for `find`
 
 Versioning
 ----------
