@@ -147,6 +147,23 @@ func (f *Finder) NotNameRegex(n string) *Finder {
 	return f
 }
 
+func (f *Finder) IgnoreVCS() *Finder {
+	excludes := []string{
+		".svn", "_svn", "CVS", "_darcs", ".arch-params", ".monotone", ".bzr",
+		".git", ".hg",
+	}
+	exNames := make(map[string]bool, len(excludes))
+	for _, exName := range excludes {
+		exNames[exName] = true
+	}
+	matcher := func(i Item) bool {
+		_, exists := exNames[i.Name()]
+		return exists
+	}
+	f.notPaths = append(f.notPaths, matcher)
+	return f
+}
+
 // Files makes the finder return files only.
 func (f *Finder) Files() *Finder {
 	f.itype = typeFile

@@ -57,13 +57,13 @@ func TestIn(t *testing.T) {
 			[]string{
 				"test-fixtures/1.log",
 				"test-fixtures/1.txt",
-				"test-fixtures/d1",
-				"test-fixtures/d1/1",
+				"test-fixtures/CVS",
+				"test-fixtures/CVS/1",
 			},
 		},
 		{
-			New().In("test-fixtures/d1"),
-			[]string{"test-fixtures/d1/1"},
+			New().In("test-fixtures/CVS"),
+			[]string{"test-fixtures/CVS/1"},
 		},
 	}
 	test(t, tests)
@@ -72,10 +72,10 @@ func TestIn(t *testing.T) {
 func TestPath(t *testing.T) {
 	tests := []testCase{
 		{
-			New().In("test-fixtures").Path("d1"),
+			New().In("test-fixtures").Path("CVS"),
 			[]string{
-				"test-fixtures/d1",
-				"test-fixtures/d1/1",
+				"test-fixtures/CVS",
+				"test-fixtures/CVS/1",
 			},
 		},
 		{
@@ -87,8 +87,8 @@ func TestPath(t *testing.T) {
 			[]string{
 				"test-fixtures/1.log",
 				"test-fixtures/1.txt",
-				"test-fixtures/d1",
-				"test-fixtures/d1/1",
+				"test-fixtures/CVS",
+				"test-fixtures/CVS/1",
 			},
 		},
 	}
@@ -98,7 +98,7 @@ func TestPath(t *testing.T) {
 func TestNotPath(t *testing.T) {
 	tests := []testCase{
 		{
-			New().In("test-fixtures").NotPath("d1"),
+			New().In("test-fixtures").NotPath("CVS"),
 			[]string{
 				"test-fixtures/1.log",
 				"test-fixtures/1.txt",
@@ -144,8 +144,8 @@ func TestNotName(t *testing.T) {
 		{
 			New().In("test-fixtures").NotName("*.log").NotName("*.txt"),
 			[]string{
-				"test-fixtures/d1/1",
-				"test-fixtures/d1",
+				"test-fixtures/CVS/1",
+				"test-fixtures/CVS",
 			},
 		},
 	}
@@ -157,8 +157,8 @@ func TestNotNameRegex(t *testing.T) {
 		{
 			New().In("test-fixtures").NotNameRegex("\\.(log|txt)$"),
 			[]string{
-				"test-fixtures/d1/1",
-				"test-fixtures/d1",
+				"test-fixtures/CVS/1",
+				"test-fixtures/CVS",
 			},
 		},
 	}
@@ -172,7 +172,7 @@ func TestFiles(t *testing.T) {
 			[]string{
 				"test-fixtures/1.log",
 				"test-fixtures/1.txt",
-				"test-fixtures/d1/1",
+				"test-fixtures/CVS/1",
 			},
 		},
 	}
@@ -184,7 +184,7 @@ func TestDirs(t *testing.T) {
 		{
 			New().In("test-fixtures").Dirs(),
 			[]string{
-				"test-fixtures/d1",
+				"test-fixtures/CVS",
 			},
 		},
 	}
@@ -196,7 +196,7 @@ func TestMinDepth(t *testing.T) {
 		{
 			New().In("test-fixtures").MinDepth(2),
 			[]string{
-				"test-fixtures/d1/1",
+				"test-fixtures/CVS/1",
 			},
 		},
 	}
@@ -210,7 +210,7 @@ func TestMaxDepth(t *testing.T) {
 			[]string{
 				"test-fixtures/1.log",
 				"test-fixtures/1.txt",
-				"test-fixtures/d1",
+				"test-fixtures/CVS",
 			},
 		},
 	}
@@ -223,6 +223,19 @@ func TestSize(t *testing.T) {
 			New().In("test-fixtures").Files().Size(func(size int64) bool { return size > 0 }),
 			[]string{
 				"test-fixtures/1.txt",
+			},
+		},
+	}
+	test(t, tests)
+}
+
+func TestIgnoreVCS(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").IgnoreVCS(),
+			[]string{
+				"test-fixtures/1.txt",
+				"test-fixtures/1.log",
 			},
 		},
 	}
