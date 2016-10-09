@@ -22,6 +22,10 @@ Usage
 -----
 See [documentation on godoc][godoc].
 
+Changes
+-------
+See the [CHANGELOG] for a full history of versions and their changes.
+
 Versioning
 ----------
 
@@ -43,3 +47,4 @@ license.
 [LICENSE]: LICENSE
 [semver]: http://semver.org/spec/v2.0.0.html
 [godoc]: https://godoc.org/github.com/nochso/finder
+[CHANGELOG]: CHANGELOG.md
