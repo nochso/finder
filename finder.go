@@ -1,9 +1,11 @@
 package finder
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
+
 	"github.com/gobwas/glob"
 )
 
@@ -114,27 +116,30 @@ func (f *Finder) Dirs() *Finder {
 	return f
 }
 
-func (f *Finder) match(i Item) bool {
+var errNoMatch = errors.New("Item did not match")
+var errSkipDir = filepath.SkipDir
+
+func (f *Finder) match(i Item) error {
 	if (f.itype == typeDir && !i.IsDir()) || (f.itype == typeFile && i.IsDir()) {
-		return false
+		return errNoMatch
 	}
-	match := true
+	var match error
 	if len(f.names) > 0 {
-		match = false
+		match = errNoMatch
 		for _, n := range f.names {
 			if n(i) {
-				match = true
+				match = nil
 				break
 			}
 		}
 	}
-	if !match {
+	if match == errNoMatch {
 		return match
 	}
 	if len(f.notNames) > 0 {
 		for _, matcher := range f.notNames {
 			if matcher(i) {
-				match = false
+				match = errNoMatch
 				continue
 			}
 		}
@@ -154,8 +159,15 @@ func (f *Finder) Each(fn func(Item)) []error {
 			return err
 		}
 		item := newItem(info, path)
-		if f.match(item) {
+		match := f.match(item)
+		switch match {
+		case nil:
 			fn(item)
+			return nil
+		case errNoMatch:
+			return nil
+		case errSkipDir:
+			return errSkipDir
 		}
 		return nil
 	}
