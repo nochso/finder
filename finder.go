@@ -46,7 +46,7 @@ func (f *Finder) In(directories ...string) *Finder {
 
 // Path narrows down the folders to be searched using gobwas/glob
 //
-// p is matched against the items RelPath()
+// p is matched against the item's RelPath()
 // See https://github.com/gobwas/glob
 func (f *Finder) Path(p string) *Finder {
 	matcher := f.path(p)
