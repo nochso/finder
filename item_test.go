@@ -2,7 +2,7 @@ package finder
 
 import "testing"
 
-func TestItemList_Size(t *testing.T) {
+func TestItemSlice_Size(t *testing.T) {
 	sl, err := New().In("test-fixtures").ToSlice()
 	if err != nil {
 		t.Fatal(err)

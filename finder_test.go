@@ -50,7 +50,7 @@ func matchFiles(t *testing.T, paths []string, files []Item) error {
 	return nil
 }
 
-func TestIn(t *testing.T) {
+func TestFinder_In(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures"),
@@ -73,7 +73,7 @@ func TestIn(t *testing.T) {
 	test(t, tests)
 }
 
-func TestPath(t *testing.T) {
+func TestFinder_Path(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").Path("CVS"),
@@ -101,7 +101,7 @@ func TestPath(t *testing.T) {
 	test(t, tests)
 }
 
-func TestNotPath(t *testing.T) {
+func TestFinder_NotPath(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").NotPath("CVS"),
@@ -114,7 +114,7 @@ func TestNotPath(t *testing.T) {
 	test(t, tests)
 }
 
-func TestName(t *testing.T) {
+func TestFinder_Name(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").Name("*.log"),
@@ -135,7 +135,7 @@ func TestName(t *testing.T) {
 	test(t, tests)
 }
 
-func TestNameRegex(t *testing.T) {
+func TestFinder_NameRegex(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").NameRegex("\\.log$"),
@@ -145,7 +145,7 @@ func TestNameRegex(t *testing.T) {
 	test(t, tests)
 }
 
-func TestNotName(t *testing.T) {
+func TestFinder_NotName(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").NotName("*.log").NotName("*.txt"),
@@ -159,7 +159,7 @@ func TestNotName(t *testing.T) {
 	test(t, tests)
 }
 
-func TestNotNameRegex(t *testing.T) {
+func TestFinder_NotNameRegex(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").NotNameRegex("\\.(log|txt)$"),
@@ -173,7 +173,7 @@ func TestNotNameRegex(t *testing.T) {
 	test(t, tests)
 }
 
-func TestFiles(t *testing.T) {
+func TestFinder_Files(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").Files(),
@@ -188,7 +188,7 @@ func TestFiles(t *testing.T) {
 	test(t, tests)
 }
 
-func TestDirs(t *testing.T) {
+func TestFinder_Dirs(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").Dirs(),
@@ -200,7 +200,7 @@ func TestDirs(t *testing.T) {
 	test(t, tests)
 }
 
-func TestMinDepth(t *testing.T) {
+func TestFinder_MinDepth(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").MinDepth(2),
@@ -213,7 +213,7 @@ func TestMinDepth(t *testing.T) {
 	test(t, tests)
 }
 
-func TestMaxDepth(t *testing.T) {
+func TestFinder_MaxDepth(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").MaxDepth(1),
@@ -227,7 +227,7 @@ func TestMaxDepth(t *testing.T) {
 	test(t, tests)
 }
 
-func TestSize(t *testing.T) {
+func TestFinder_Size(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").Files().Size(func(size int64) bool { return size > 0 }),
@@ -239,7 +239,7 @@ func TestSize(t *testing.T) {
 	test(t, tests)
 }
 
-func TestIgnoreVCS(t *testing.T) {
+func TestFinder_IgnoreVCS(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").IgnoreVCS(),
@@ -252,7 +252,7 @@ func TestIgnoreVCS(t *testing.T) {
 	test(t, tests)
 }
 
-func TestIgnoreDots(t *testing.T) {
+func TestFinder_IgnoreDots(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").IgnoreDots(),
