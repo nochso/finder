@@ -36,11 +36,11 @@ func matchFiles(t *testing.T, paths []string, files []Item) error {
 		m[path] = false
 	}
 	for _, file := range files {
-		_, exists := m[file.Path()]
+		_, exists := m[file.RelPath()]
 		if !exists {
-			return fmt.Errorf("unexpected path: %s", file.Path())
+			return fmt.Errorf("unexpected path: %s", file.RelPath())
 		}
-		m[file.Path()] = true
+		m[file.RelPath()] = true
 	}
 	for path, found := range m {
 		if !found {
@@ -55,18 +55,18 @@ func TestFinder_In(t *testing.T) {
 		{
 			New().In("test-fixtures"),
 			[]string{
-				"test-fixtures/1.log",
-				"test-fixtures/1.txt",
-				"test-fixtures/CVS",
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS/.config",
+				"1.log",
+				"1.txt",
+				"CVS",
+				"CVS/1",
+				"CVS/.config",
 			},
 		},
 		{
 			New().In("test-fixtures/CVS"),
 			[]string{
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS/.config",
+				"1",
+				".config",
 			},
 		},
 	}
@@ -78,9 +78,9 @@ func TestFinder_Path(t *testing.T) {
 		{
 			New().In("test-fixtures").Path("CVS"),
 			[]string{
-				"test-fixtures/CVS",
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS/.config",
+				"CVS",
+				"CVS/1",
+				"CVS/.config",
 			},
 		},
 		{
@@ -90,11 +90,11 @@ func TestFinder_Path(t *testing.T) {
 		{
 			New().In("test-fixtures").Path("*"),
 			[]string{
-				"test-fixtures/1.log",
-				"test-fixtures/1.txt",
-				"test-fixtures/CVS",
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS/.config",
+				"1.log",
+				"1.txt",
+				"CVS",
+				"CVS/1",
+				"CVS/.config",
 			},
 		},
 	}
@@ -106,8 +106,8 @@ func TestFinder_NotPath(t *testing.T) {
 		{
 			New().In("test-fixtures").NotPath("CVS"),
 			[]string{
-				"test-fixtures/1.log",
-				"test-fixtures/1.txt",
+				"1.log",
+				"1.txt",
 			},
 		},
 	}
@@ -118,17 +118,17 @@ func TestFinder_Name(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").Name("*.log"),
-			[]string{"test-fixtures/1.log"},
+			[]string{"1.log"},
 		},
 		{
 			New().In("test-fixtures").Name("?.log"),
-			[]string{"test-fixtures/1.log"},
+			[]string{"1.log"},
 		},
 		{
 			New().In("test-fixtures").Name("?.{log,txt}"),
 			[]string{
-				"test-fixtures/1.log",
-				"test-fixtures/1.txt",
+				"1.log",
+				"1.txt",
 			},
 		},
 	}
@@ -139,7 +139,7 @@ func TestFinder_NameRegex(t *testing.T) {
 	tests := []testCase{
 		{
 			New().In("test-fixtures").NameRegex("\\.log$"),
-			[]string{"test-fixtures/1.log"},
+			[]string{"1.log"},
 		},
 	}
 	test(t, tests)
@@ -150,9 +150,9 @@ func TestFinder_NotName(t *testing.T) {
 		{
 			New().In("test-fixtures").NotName("*.log").NotName("*.txt"),
 			[]string{
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS",
-				"test-fixtures/CVS/.config",
+				"CVS/1",
+				"CVS",
+				"CVS/.config",
 			},
 		},
 	}
@@ -164,9 +164,9 @@ func TestFinder_NotNameRegex(t *testing.T) {
 		{
 			New().In("test-fixtures").NotNameRegex("\\.(log|txt)$"),
 			[]string{
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS/.config",
-				"test-fixtures/CVS",
+				"CVS/1",
+				"CVS/.config",
+				"CVS",
 			},
 		},
 	}
@@ -178,10 +178,10 @@ func TestFinder_Files(t *testing.T) {
 		{
 			New().In("test-fixtures").Files(),
 			[]string{
-				"test-fixtures/1.log",
-				"test-fixtures/1.txt",
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS/.config",
+				"1.log",
+				"1.txt",
+				"CVS/1",
+				"CVS/.config",
 			},
 		},
 	}
@@ -193,7 +193,7 @@ func TestFinder_Dirs(t *testing.T) {
 		{
 			New().In("test-fixtures").Dirs(),
 			[]string{
-				"test-fixtures/CVS",
+				"CVS",
 			},
 		},
 	}
@@ -205,8 +205,8 @@ func TestFinder_MinDepth(t *testing.T) {
 		{
 			New().In("test-fixtures").MinDepth(2),
 			[]string{
-				"test-fixtures/CVS/1",
-				"test-fixtures/CVS/.config",
+				"CVS/1",
+				"CVS/.config",
 			},
 		},
 	}
@@ -218,9 +218,9 @@ func TestFinder_MaxDepth(t *testing.T) {
 		{
 			New().In("test-fixtures").MaxDepth(1),
 			[]string{
-				"test-fixtures/1.log",
-				"test-fixtures/1.txt",
-				"test-fixtures/CVS",
+				"1.log",
+				"1.txt",
+				"CVS",
 			},
 		},
 	}
@@ -232,7 +232,7 @@ func TestFinder_Size(t *testing.T) {
 		{
 			New().In("test-fixtures").Files().Size(func(size int64) bool { return size > 0 }),
 			[]string{
-				"test-fixtures/1.txt",
+				"1.txt",
 			},
 		},
 	}
@@ -244,8 +244,8 @@ func TestFinder_IgnoreVCS(t *testing.T) {
 		{
 			New().In("test-fixtures").IgnoreVCS(),
 			[]string{
-				"test-fixtures/1.txt",
-				"test-fixtures/1.log",
+				"1.txt",
+				"1.log",
 			},
 		},
 	}
@@ -257,10 +257,10 @@ func TestFinder_IgnoreDots(t *testing.T) {
 		{
 			New().In("test-fixtures").IgnoreDots(),
 			[]string{
-				"test-fixtures/1.log",
-				"test-fixtures/1.txt",
-				"test-fixtures/CVS",
-				"test-fixtures/CVS/1",
+				"1.log",
+				"1.txt",
+				"CVS",
+				"CVS/1",
 			},
 		},
 	}
