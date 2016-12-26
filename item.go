@@ -2,7 +2,7 @@ package finder
 
 import (
 	"os"
-	"path"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -67,7 +67,7 @@ func (i Item) Depth() int {
 
 // Path returns the path including the folder it was found in.
 func (i Item) Path() string {
-	return path.Join(i.base, i.path)
+	return filepath.Join(i.base, i.path)
 }
 
 // RelPath returns the path relative to the searched directory.
