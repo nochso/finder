@@ -10,8 +10,9 @@ matrix:
 install:
   - # Do nothing. This is needed to prevent default install action "go get -t -v ./..." from happening here (we want it to happen inside script step).
 script:
+  - go get -v github.com/mattn/goveralls
   - go get -t -v ./...
   - diff -u <(echo -n) <(gofmt -d -s .)
   - go tool vet .
-  - go test -v -race ./...
-  
+  - go test -v -race -covermode=count -coverprofile=profile.cov ./...
+  - $HOME/gopath/bin/goveralls -coverprofile=profile.cov -service=travis-ci

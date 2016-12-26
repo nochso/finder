@@ -5,6 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/nochso/finder.svg?maxAge=2592000)](https://github.com/nochso/finder/releases)
 [![SemVer 2.0.0](https://img.shields.io/badge/SemVer-2.0.0-blue.svg)][semver]
 [![Build Status](https://travis-ci.org/nochso/finder.svg?branch=master)](https://travis-ci.org/nochso/finder)
+[![Coverage Status](https://coveralls.io/repos/github/nochso/finder/badge.svg?branch=master)](https://coveralls.io/github/nochso/finder?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/nochso/finder)](https://goreportcard.com/report/github.com/nochso/finder)
 
 A fluent interface around Go's [path/filepath.Walk].
