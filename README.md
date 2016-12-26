@@ -11,6 +11,7 @@ A fluent interface around Go's [path/filepath.Walk].
 - Inspired by [symfony/finder]
 - Single external dependency on [gobwas/glob] for glob path matching
 
+
 Installation
 ------------
 
@@ -18,13 +19,18 @@ Installation
 go get github.com/nochso/finder
 ```
 
+
 Usage
 -----
+
 See [documentation on godoc][godoc].
+
 
 Changes
 -------
+
 See the [CHANGELOG] for a full history of versions and their changes.
+
 
 Versioning
 ----------
@@ -35,11 +41,13 @@ This package adheres to [semantic versioning 2.0.0][semver].
 `1.*` versions. Only a major release e.g. `2.0.0` will break backwards
 compatibility.
 
+
 License
 -------
 
 This package is released under the MIT license. See [LICENSE] for the full
 license.
+
 
 [path/filepath.Walk]: https://golang.org/pkg/path/filepath/#Walk
 [symfony/finder]: https://symfony.com/doc/current/components/finder.html
