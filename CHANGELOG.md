@@ -12,9 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Method `Sort(func (i, j Item) bool)` to `ItemSlice`.
-  The given function implements the `Less` part of the sort interface.
-- Common methods for `Sort()`: `ByName`, `ByPath`, `ByModified`, `BySize` and `ByExtension`.
+- New method `ItemSlice.Sort(func (i, j Item) bool)` sorts the slice given a function that mimics `Less` of `sort.Interface`.
+- Common functions for `Sort()`: `ByName`, `ByPath`, `ByModified`, `BySize` and `ByExtension`.
 
 
 ### Changed

@@ -33,7 +33,7 @@ func ByExtension(i, j Item) bool {
 	return filepath.Ext(i.Name()) < filepath.Ext(j.Name())
 }
 
-// Sort the item slice using the given `Less` implementation of the sort interface.
+// Sort the slice given a function that mimics `Less` of `sort.Interface`.
 func (is ItemSlice) Sort(lessFn func(i, j Item) bool) {
 	sort.Sort(sortableItemSlice{is, lessFn})
 }
