@@ -230,9 +230,17 @@ func TestFinder_MaxDepth(t *testing.T) {
 func TestFinder_Size(t *testing.T) {
 	tests := []testCase{
 		{
-			New().In("test-fixtures").Files().Size(func(size int64) bool { return size > 0 }),
+			New().In("test-fixtures").Files().Size(1, 1),
 			[]string{
 				"1.txt",
+			},
+		},
+		{
+			New().In("test-fixtures").Files().Size(0, 0),
+			[]string{
+				"1.log",
+				"CVS/.config",
+				"CVS/1",
 			},
 		},
 	}

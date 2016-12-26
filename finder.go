@@ -195,14 +195,17 @@ func (f *Finder) MinDepth(min int) *Finder {
 	return f
 }
 
-func (f *Finder) Size(fn func(size int64) bool) *Finder {
-	matcher := func(i Item) bool {
-		if i.IsDir() {
-			return true
-		}
-		return fn(i.Size())
+// Size filters by minimum and maximum file size.
+// Max is ignored if it's lower than min.
+//
+//	Size(0, 1024)    // <=1kB
+//	Size(1024, 1024) // ==1kB
+//	Size(1024, -1)   // >=1kB
+func (f *Finder) Size(min, max int64) *Finder {
+	m := func(i Item) bool {
+		return i.Size() >= min && (max >= min && i.Size() <= max)
 	}
-	f.sizes = append(f.sizes, matcher)
+	f.sizes = append(f.sizes, m)
 	return f
 }
 

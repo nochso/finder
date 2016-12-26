@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - This changelog.
 
+### Changed
+
+- ***BREAKING***: Change parameters of `Finder.Size()` from `func(size int64) bool` to `min, max int64`.
+
 
 [0.1.0] - 2016-10-10
 --------------------
