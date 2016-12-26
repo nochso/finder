@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - This changelog.
+- Method `Filter(func(Item) bool)` to filter using a custom matcher.
 
 ### Changed
 

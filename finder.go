@@ -26,6 +26,7 @@ type Finder struct {
 	notPaths    []Matcher
 	notNames    []Matcher
 	sizes       []Matcher
+	userFilters []Matcher
 	minDepth    int
 	maxDepth    int
 	setupErrors []error
@@ -195,6 +196,13 @@ func (f *Finder) MinDepth(min int) *Finder {
 	return f
 }
 
+// Filter items using a custom Matcher.
+//	func(Item) bool
+func (f *Finder) Filter(m Matcher) *Finder {
+	f.userFilters = append(f.userFilters, m)
+	return f
+}
+
 // Size filters by minimum and maximum file size.
 // Max is ignored if it's lower than min.
 //
@@ -226,6 +234,10 @@ func (f *Finder) match(i Item) error {
 	if match != IsMatch {
 		return match
 	}
+	match = f.matchUserFilters(i)
+	if match != IsMatch {
+		return match
+	}
 	match = f.matchPaths(i)
 	if match != IsMatch {
 		return match
@@ -247,6 +259,18 @@ func (f *Finder) matchSize(i Item) error {
 	}
 	for _, s := range f.sizes {
 		if s(i) {
+			return IsMatch
+		}
+	}
+	return ErrNoMatch
+}
+
+func (f *Finder) matchUserFilters(i Item) error {
+	if len(f.userFilters) == 0 {
+		return IsMatch
+	}
+	for _, f := range f.userFilters {
+		if f(i) {
 			return IsMatch
 		}
 	}

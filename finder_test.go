@@ -274,3 +274,20 @@ func TestFinder_IgnoreDots(t *testing.T) {
 	}
 	test(t, tests)
 }
+
+func TestFinder_Filter(t *testing.T) {
+	tests := []testCase{
+		{
+			New().In("test-fixtures").Filter(
+				func(i Item) bool {
+					return i.Depth() == 2
+				},
+			),
+			[]string{
+				"CVS/.config",
+				"CVS/1",
+			},
+		},
+	}
+	test(t, tests)
+}
