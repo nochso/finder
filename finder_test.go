@@ -215,6 +215,15 @@ func TestFinder_Depth(t *testing.T) {
 				"1.txt",
 				"CVS",
 			},
+		}, {
+			New().In("test-fixtures").Depth(0, -1),
+			[]string{
+				"1.log",
+				"1.txt",
+				"CVS",
+				"CVS/1",
+				"CVS/.config",
+			},
 		},
 	}
 	test(t, tests)
@@ -234,6 +243,15 @@ func TestFinder_Size(t *testing.T) {
 				"1.log",
 				"CVS/.config",
 				"CVS/1",
+			},
+		},
+		{
+			New().In("test-fixtures").Files().Size(0, -1),
+			[]string{
+				"1.log",
+				"1.txt",
+				"CVS/1",
+				"CVS/.config",
 			},
 		},
 	}
