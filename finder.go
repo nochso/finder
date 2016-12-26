@@ -27,8 +27,7 @@ type Finder struct {
 	notNames    []Matcher
 	sizes       []Matcher
 	userFilters []Matcher
-	minDepth    int
-	maxDepth    int
+	depths      []Matcher
 	setupErrors []error
 	itype       itemType
 }
@@ -40,7 +39,7 @@ type Matcher func(Item) bool
 //
 // By default it will search for both files and directories.
 func New() *Finder {
-	return &Finder{maxDepth: -1}
+	return &Finder{}
 }
 
 // In searches in the given list of directories.
@@ -186,13 +185,11 @@ func (f *Finder) Dirs() *Finder {
 	return f
 }
 
-func (f *Finder) MaxDepth(max int) *Finder {
-	f.maxDepth = max
-	return f
-}
-
-func (f *Finder) MinDepth(min int) *Finder {
-	f.minDepth = min
+func (f *Finder) Depth(min, max int) *Finder {
+	m := func(i Item) bool {
+		return i.Depth() >= min && (max < min || i.Depth() <= max)
+	}
+	f.depths = append(f.depths, m)
 	return f
 }
 
@@ -278,17 +275,15 @@ func (f *Finder) matchUserFilters(i Item) error {
 }
 
 func (f *Finder) matchDepth(i Item) error {
-	if f.maxDepth == -1 && f.minDepth == 0 {
+	if len(f.depths) == 0 {
 		return isMatch
 	}
-	depth := i.Depth()
-	if f.minDepth != 0 && depth < f.minDepth {
-		return errNoMatch
+	for _, d := range f.depths {
+		if d(i) {
+			return isMatch
+		}
 	}
-	if f.maxDepth != -1 && depth > f.maxDepth {
-		return errSkipDir
-	}
-	return isMatch
+	return errNoMatch
 }
 
 func (f *Finder) matchPaths(i Item) error {

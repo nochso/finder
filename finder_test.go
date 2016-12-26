@@ -200,23 +200,16 @@ func TestFinder_Dirs(t *testing.T) {
 	test(t, tests)
 }
 
-func TestFinder_MinDepth(t *testing.T) {
+func TestFinder_Depth(t *testing.T) {
 	tests := []testCase{
 		{
-			New().In("test-fixtures").MinDepth(2),
+			New().In("test-fixtures").Depth(2, -1),
 			[]string{
 				"CVS/1",
 				"CVS/.config",
 			},
-		},
-	}
-	test(t, tests)
-}
-
-func TestFinder_MaxDepth(t *testing.T) {
-	tests := []testCase{
-		{
-			New().In("test-fixtures").MaxDepth(1),
+		}, {
+			New().In("test-fixtures").Depth(1, 1),
 			[]string{
 				"1.log",
 				"1.txt",

@@ -14,11 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - This changelog.
 - Method `Filter(func(Item) bool)` to filter using a custom matcher.
+- Method `Depth(min, max int)` to filter based on directory depth.
+  Replaces the removed methods `MinDepth` and `MaxDepth`.
 
 ### Changed
 
 - ***BREAKING***: Change parameters of `Finder.Size()` from `func(size int64) bool` to `min, max int64`.
 
+### Removed
+
+- ***BREAKING*** Methods `MaxDepth` and `MinDepth`. Use `Depth` instead.
 
 [0.1.0] - 2016-10-10
 --------------------
