@@ -64,3 +64,16 @@ func TestItemSlice_Sort_ByName(t *testing.T) {
 		t.Fatalf("expecting order to ascend by name; got first = %#v; last = %#v", sl[0].Name(), sl[len(sl)-1].Name())
 	}
 }
+
+func TestItemSlice_ToStringSlice(t *testing.T) {
+	sl, err := New().In("test-fixtures").Name("1.*").ToSlice()
+	if err != nil {
+		t.Fatal(err)
+	}
+	sl.Sort(ByExtension)
+	act := sl.ToStringSlice()
+	exp := []string{"test-fixtures/1.log", "test-fixtures/1.txt"}
+	if !reflect.DeepEqual(act, exp) {
+		t.Fatal(pretty.Compare(act, exp))
+	}
+}
