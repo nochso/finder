@@ -208,7 +208,7 @@ func (f *Finder) Filter(m Matcher) *Finder {
 //	Size(1024, -1)   // >=1kB
 func (f *Finder) Size(min, max int64) *Finder {
 	m := func(i Item) bool {
-		return i.Size() >= min && (max >= min && i.Size() <= max)
+		return i.Size() >= min && (max < min || i.Size() <= max)
 	}
 	f.sizes = append(f.sizes, m)
 	return f
