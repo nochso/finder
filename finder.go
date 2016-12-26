@@ -160,6 +160,9 @@ func (f *Finder) IgnoreVCS() *Finder {
 		exNames[exName] = true
 	}
 	matcher := func(i Item) bool {
+		if !i.IsDir() {
+			return false
+		}
 		_, exists := exNames[i.Name()]
 		return exists
 	}

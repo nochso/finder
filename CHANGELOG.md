@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   behaviour of `<=0.1.0`, reducing time for shallow scans in nested directories.
 
 
+### Fixed
+
+- `IgnoreVCS` happened to ignore files. Now only directories are ignored as the
+  documentation already claimed.
+
+
 [0.2.0] - 2016-12-26
 --------------------
 
