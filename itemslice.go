@@ -1,9 +1,37 @@
 package finder
 
-import "sort"
+import (
+	"path/filepath"
+	"sort"
+)
 
 // ItemSlice is a list of items.
 type ItemSlice []Item
+
+// ByName sorts by the base name in ascending order.
+func ByName(i, j Item) bool {
+	return i.Name() < j.Name()
+}
+
+// ByPath sorts by path in ascending order.
+func ByPath(i, j Item) bool {
+	return i.Path() < j.Path()
+}
+
+// ByModified sorts by modification time in ascending order.
+func ByModified(i, j Item) bool {
+	return i.ModTime().Before(j.ModTime())
+}
+
+// BySize sorts by file size in ascending order.
+func BySize(i, j Item) bool {
+	return i.Size() < j.Size()
+}
+
+// ByExtension sorts by file extension in ascending order.
+func ByExtension(i, j Item) bool {
+	return filepath.Ext(i.Name()) < filepath.Ext(j.Name())
+}
 
 // Sort the item slice using the given `Less` implementation of the sort interface.
 func (is ItemSlice) Sort(lessFn func(i, j Item) bool) {
