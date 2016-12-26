@@ -27,6 +27,7 @@ type Finder struct {
 	notNames    []Matcher
 	sizes       []Matcher
 	userFilters []Matcher
+	maxDepth    int // maximum possible depth
 	depths      []Matcher
 	setupErrors []error
 	itype       itemType
@@ -196,6 +197,13 @@ func (f *Finder) Depth(min, max int) *Finder {
 	m := func(i Item) bool {
 		return i.Depth() >= min && (max < min || i.Depth() <= max)
 	}
+	// Remember maximum possible depth
+	if max < min {
+		f.maxDepth = -1
+	}
+	if f.maxDepth != -1 && max > f.maxDepth {
+		f.maxDepth = max
+	}
 	f.depths = append(f.depths, m)
 	return f
 }
@@ -286,6 +294,10 @@ func (f *Finder) matchUserFilters(i Item) error {
 func (f *Finder) matchDepth(i Item) error {
 	if len(f.depths) == 0 {
 		return isMatch
+	}
+	// Completely skip dirs that are never needed.
+	if f.maxDepth != -1 && i.Depth() > f.maxDepth {
+		return errSkipDir
 	}
 	for _, d := range f.depths {
 		if d(i) {

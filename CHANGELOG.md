@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   The given function implements the `Less` part of the sort interface.
 
 
+### Changed
+
+- Completely skip folders that are deeper than the maximum depth. Restores
+  behaviour of `<=0.1.0`, reducing time for shallow scans in nested directories.
+
+
 [0.2.0] - 2016-12-26
 --------------------
 
