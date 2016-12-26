@@ -148,6 +148,7 @@ func (f *Finder) NotNameRegex(n string) *Finder {
 	return f
 }
 
+// IgnoreVCS ignores directories used by common version control systems.
 func (f *Finder) IgnoreVCS() *Finder {
 	excludes := []string{
 		".svn", "_svn", "CVS", "_darcs", ".arch-params", ".monotone", ".bzr",
@@ -165,6 +166,7 @@ func (f *Finder) IgnoreVCS() *Finder {
 	return f
 }
 
+// IgnoreDots ignores directories with a leading dot.
 func (f *Finder) IgnoreDots() *Finder {
 	matcher := func(i Item) bool {
 		return strings.HasPrefix(i.Name(), ".")
@@ -185,6 +187,11 @@ func (f *Finder) Dirs() *Finder {
 	return f
 }
 
+// Depth filters based on the relative depth of the directory.
+// Parameters min and max are one-based. Max is ignored if it's lower than min.
+//
+//	Depth(1, 1)  // root level only
+//	Depth(2, -1) // anything deeper than root
 func (f *Finder) Depth(min, max int) *Finder {
 	m := func(i Item) bool {
 		return i.Depth() >= min && (max < min || i.Depth() <= max)
@@ -194,6 +201,8 @@ func (f *Finder) Depth(min, max int) *Finder {
 }
 
 // Filter items using a custom Matcher.
+// Signature of a matcher:
+//
 //	func(Item) bool
 func (f *Finder) Filter(m Matcher) *Finder {
 	f.userFilters = append(f.userFilters, m)

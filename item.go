@@ -20,6 +20,7 @@ func (il ItemSlice) Size() uint64 {
 	return size
 }
 
+// Item represents a single file or directory.
 type Item struct {
 	os.FileInfo
 	base string
