@@ -10,9 +10,9 @@ import (
 type ItemSlice []Item
 
 // Size returns the sum of all file sizes.
-func (il ItemSlice) Size() uint64 {
+func (is ItemSlice) Size() uint64 {
 	var size uint64
-	for _, i := range il {
+	for _, i := range is {
 		if !i.IsDir() {
 			size += uint64(i.Size())
 		}
@@ -37,22 +37,22 @@ func newItem(info os.FileInfo, base, path string) Item {
 
 // Depth returns the depth of the item based on RelPath.
 // It starts at 1 (one).
-func (f Item) Depth() int {
-	rp := f.RelPath()
+func (i Item) Depth() int {
+	rp := i.RelPath()
 	return strings.Count(rp, string(os.PathSeparator)) + 1
 }
 
 // Path returns the path including the folder it was found in.
-func (f Item) Path() string {
-	return path.Join(f.base, f.path)
+func (i Item) Path() string {
+	return path.Join(i.base, i.path)
 }
 
 // RelPath returns the path relative to the searched directory.
-func (f Item) RelPath() string {
-	return f.path
+func (i Item) RelPath() string {
+	return i.path
 }
 
 // String returns the path
-func (f Item) String() string {
-	return f.Path()
+func (i Item) String() string {
+	return i.Path()
 }
