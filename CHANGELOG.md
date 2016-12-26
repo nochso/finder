@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [Unreleased]
 ------------
 
+### Added
+
+- Method `Sort(func (i, j Item) bool)` to `ItemSlice`.
+  The given function implements the `Less` part of the sort interface.
+
 
 [0.2.0] - 2016-12-26
 --------------------
