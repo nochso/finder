@@ -65,3 +65,12 @@ func (is ItemSlice) Size() uint64 {
 	}
 	return size
 }
+
+// ToStringSlice returns a string slice with each item's path.
+func (is ItemSlice) ToStringSlice() []string {
+	ss := make([]string, 0, len(is))
+	for _, item := range is {
+		ss = append(ss, item.String())
+	}
+	return ss
+}

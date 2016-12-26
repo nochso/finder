@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - New method `ItemSlice.Sort(func (i, j Item) bool)` sorts the slice given a function that mimics `Less` of `sort.Interface`.
 - Common functions for `Sort()`: `ByName`, `ByPath`, `ByModified`, `BySize` and `ByExtension`.
+- New method `ItemSlice.ToStringSlice()` returns a string slice of paths.
 
 
 ### Changed
