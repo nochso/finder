@@ -217,37 +217,37 @@ func (f *Finder) Size(min, max int64) *Finder {
 	return f
 }
 
-var IsMatch error = nil
-var ErrNoMatch = errors.New("Item did not match")
-var ErrSkipDir = filepath.SkipDir
+var isMatch error = nil
+var errNoMatch = errors.New("Item did not match")
+var errSkipDir = filepath.SkipDir
 
 // fast excludes first, followed by more expensive path matching
 func (f *Finder) match(i Item) error {
 	if (f.itype == typeDir && !i.IsDir()) || (f.itype == typeFile && i.IsDir()) {
-		return ErrNoMatch
+		return errNoMatch
 	}
 	match := f.matchDepth(i)
-	if match != IsMatch {
+	if match != isMatch {
 		return match
 	}
 	match = f.matchSize(i)
-	if match != IsMatch {
+	if match != isMatch {
 		return match
 	}
 	match = f.matchUserFilters(i)
-	if match != IsMatch {
+	if match != isMatch {
 		return match
 	}
 	match = f.matchPaths(i)
-	if match != IsMatch {
+	if match != isMatch {
 		return match
 	}
 	match = f.matchNotPaths(i)
-	if match != IsMatch {
+	if match != isMatch {
 		return match
 	}
 	match = f.matchNames(i)
-	if match != IsMatch {
+	if match != isMatch {
 		return match
 	}
 	return f.matchNotNames(i)
@@ -255,58 +255,58 @@ func (f *Finder) match(i Item) error {
 
 func (f *Finder) matchSize(i Item) error {
 	if len(f.sizes) == 0 {
-		return IsMatch
+		return isMatch
 	}
 	for _, s := range f.sizes {
 		if s(i) {
-			return IsMatch
+			return isMatch
 		}
 	}
-	return ErrNoMatch
+	return errNoMatch
 }
 
 func (f *Finder) matchUserFilters(i Item) error {
 	if len(f.userFilters) == 0 {
-		return IsMatch
+		return isMatch
 	}
 	for _, f := range f.userFilters {
 		if f(i) {
-			return IsMatch
+			return isMatch
 		}
 	}
-	return ErrNoMatch
+	return errNoMatch
 }
 
 func (f *Finder) matchDepth(i Item) error {
 	if f.maxDepth == -1 && f.minDepth == 0 {
-		return IsMatch
+		return isMatch
 	}
 	depth := i.Depth()
 	if f.minDepth != 0 && depth < f.minDepth {
-		return ErrNoMatch
+		return errNoMatch
 	}
 	if f.maxDepth != -1 && depth > f.maxDepth {
-		return ErrSkipDir
+		return errSkipDir
 	}
-	return IsMatch
+	return isMatch
 }
 
 func (f *Finder) matchPaths(i Item) error {
 	if len(f.paths) == 0 {
-		return IsMatch
+		return isMatch
 	}
 	if i.IsDir() {
 		for _, p := range f.paths {
 			if !p(i) {
-				return ErrSkipDir
+				return errSkipDir
 			}
 		}
-		return IsMatch
+		return isMatch
 	}
-	match := ErrNoMatch
+	match := errNoMatch
 	for _, p := range f.paths {
 		if p(i) {
-			match = IsMatch
+			match = isMatch
 		}
 	}
 	return match
@@ -314,46 +314,46 @@ func (f *Finder) matchPaths(i Item) error {
 
 func (f *Finder) matchNotPaths(i Item) error {
 	if len(f.notPaths) == 0 {
-		return IsMatch
+		return isMatch
 	}
 	if i.IsDir() {
 		for _, p := range f.notPaths {
 			if p(i) {
-				return ErrSkipDir
+				return errSkipDir
 			}
 		}
-		return IsMatch
+		return isMatch
 	}
 	for _, p := range f.notPaths {
 		if p(i) {
-			return ErrNoMatch
+			return errNoMatch
 		}
 	}
-	return IsMatch
+	return isMatch
 }
 
 func (f *Finder) matchNames(i Item) error {
 	if len(f.names) == 0 {
-		return IsMatch
+		return isMatch
 	}
 	for _, n := range f.names {
 		if n(i) {
-			return IsMatch
+			return isMatch
 		}
 	}
-	return ErrNoMatch
+	return errNoMatch
 }
 
 func (f *Finder) matchNotNames(i Item) error {
 	if len(f.notNames) == 0 {
-		return IsMatch
+		return isMatch
 	}
 	for _, n := range f.notNames {
 		if n(i) {
-			return ErrNoMatch
+			return errNoMatch
 		}
 	}
-	return IsMatch
+	return isMatch
 }
 
 // Each calls func fn with each found item.
@@ -374,19 +374,19 @@ func (f *Finder) Each(fn func(Item)) []error {
 		item := newItem(info, dir, relDir)
 		match := f.match(item)
 		switch match {
-		case IsMatch:
+		case isMatch:
 			fn(item)
 			return nil
-		case ErrNoMatch:
+		case errNoMatch:
 			return nil
-		case ErrSkipDir:
-			return ErrSkipDir
+		case errSkipDir:
+			return errSkipDir
 		}
 		return nil
 	}
 	for _, dir = range f.dirs {
 		err := filepath.Walk(dir, walker)
-		if err != nil && err != ErrSkipDir {
+		if err != nil && err != errSkipDir {
 			errs = append(errs, err)
 		}
 	}
