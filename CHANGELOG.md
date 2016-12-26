@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [Unreleased]
 ------------
 
+
+[0.2.0] - 2016-12-26
+--------------------
+
 ### Added
 
 - This changelog.
@@ -17,13 +21,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Method `Depth(min, max int)` to filter based on directory depth.
   Replaces the removed methods `MinDepth` and `MaxDepth`.
 
+
 ### Changed
 
 - ***BREAKING***: Change parameters of `Finder.Size()` from `func(size int64) bool` to `min, max int64`.
 
+
 ### Removed
 
 - ***BREAKING*** Methods `MaxDepth` and `MinDepth`. Use `Depth` instead.
+
 
 [0.1.0] - 2016-10-10
 --------------------
@@ -33,5 +40,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Initial public release
 
 
-[Unreleased]: https://github.com/nochso/finder/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/nochso/finder/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/nochso/finder/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/nochso/finder/compare/a71aecf5b715e482a6b29121a271936f92aeea51...0.1.0
