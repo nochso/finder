@@ -247,31 +247,22 @@ func (f *Finder) match(i Item) error {
 	if (f.itype == typeDir && !i.IsDir()) || (f.itype == typeFile && i.IsDir()) {
 		return errNoMatch
 	}
-	match := f.matchDepth(i)
-	if match != isMatch {
-		return match
+	matchers := []func(Item) error{
+		f.matchDepth,
+		f.matchSize,
+		f.matchUserFilters,
+		f.matchPaths,
+		f.matchNotPaths,
+		f.matchNames,
+		f.matchNotNames,
 	}
-	match = f.matchSize(i)
-	if match != isMatch {
-		return match
+	for _, m := range matchers {
+		match := m(i)
+		if match != isMatch {
+			return match
+		}
 	}
-	match = f.matchUserFilters(i)
-	if match != isMatch {
-		return match
-	}
-	match = f.matchPaths(i)
-	if match != isMatch {
-		return match
-	}
-	match = f.matchNotPaths(i)
-	if match != isMatch {
-		return match
-	}
-	match = f.matchNames(i)
-	if match != isMatch {
-		return match
-	}
-	return f.matchNotNames(i)
+	return isMatch
 }
 
 func (f *Finder) matchSize(i Item) error {
