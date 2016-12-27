@@ -102,6 +102,14 @@ func TestFinder_Path(t *testing.T) {
 	test(t, tests)
 }
 
+func TestFinder_Each_Error(t *testing.T) {
+	f := New().In("//")
+	f.Each(func(Item) {})
+	if f.Error() == nil {
+		t.Error("expecting error, got nil")
+	}
+}
+
 func TestFinder_Error(t *testing.T) {
 	f := New().Path("[").Name("[").NameRegex("[")
 	if f.Error() == nil {
