@@ -413,12 +413,24 @@ func (f *Finder) Each(fn func(Item)) {
 	}
 }
 
+// Chan returns a channel receiving all found items.
+func (f *Finder) Chan() <-chan Item {
+	ch := make(chan Item, 32)
+	go func() {
+		f.Each(func(i Item) {
+			ch <- i
+		})
+		close(ch)
+	}()
+	return ch
+}
+
 // ToSlice returns a slice of all found items.
 // Any errors that occur while walking will be added to `Finder.Error()`.
 func (f *Finder) ToSlice() ItemSlice {
 	var l []Item
-	f.Each(func(file Item) {
+	for file := range f.Chan() {
 		l = append(l, file)
-	})
+	}
 	return l
 }

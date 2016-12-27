@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - New method `ItemSlice.ToStringSlice()` returns a string slice of paths.
 - New method `Finder.Error()` returns a `MultiErr` containing all errors that
   occured during setup or walking.
+- New method `Finder.Chan()` returns a channel receiving all found items.
 
 
 ### Changed
