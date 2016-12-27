@@ -3,6 +3,7 @@ package finder
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -79,7 +80,7 @@ func (f *Finder) NotPath(p string) *Finder {
 func (f *Finder) path(p string) Matcher {
 	g, err := glob.Compile(p, os.PathSeparator)
 	if err != nil {
-		f.err = append(f.err, err)
+		f.err = append(f.err, fmt.Errorf("error parsing glob %#v: %s", p, err))
 		return nil
 	}
 	return func(i Item) bool {
@@ -104,7 +105,7 @@ func (f *Finder) Name(n string) *Finder {
 func (f *Finder) name(n string) Matcher {
 	g, err := glob.Compile(n, os.PathSeparator)
 	if err != nil {
-		f.err = append(f.err, err)
+		f.err = append(f.err, fmt.Errorf("error parsing glob %#v: %s", n, err))
 		return nil
 	}
 	return func(i Item) bool {
@@ -416,7 +417,7 @@ func (f *Finder) Each(fn func(Item)) {
 	for _, dir = range f.dirs {
 		err := filepath.Walk(dir, walker)
 		if err != nil && err != errSkipDir {
-			f.err = append(f.err, err)
+			f.err = append(f.err, fmt.Errorf("error walking %s: %s", dir, err))
 		}
 	}
 }
