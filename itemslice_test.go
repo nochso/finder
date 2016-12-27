@@ -9,21 +9,23 @@ import (
 )
 
 func TestItemSlice_Size(t *testing.T) {
-	sl, err := New().In("test-fixtures").ToSlice()
-	if err != nil {
-		t.Fatal(err)
+	f := New().In("test-fixtures")
+	if f.err != nil {
+		t.Fatal(f.err)
 	}
+	sl := f.ToSlice()
 	if sl.Size() != 1 {
 		t.Fatalf("expecting size 1, got %d", sl.Size())
 	}
 }
 
 func testSort(t *testing.T, sortFn func(Item, Item) bool) ItemSlice {
-	sl, err := New().In("test-fixtures").ToSlice()
-	if err != nil {
-		t.Fatal(err)
+	f := New().In("test-fixtures")
+	if f.err != nil {
+		t.Fatal(f.err)
 		return nil
 	}
+	sl := f.ToSlice()
 	sl.Sort(sortFn)
 	return sl
 }
@@ -66,10 +68,11 @@ func TestItemSlice_Sort_ByName(t *testing.T) {
 }
 
 func TestItemSlice_ToStringSlice(t *testing.T) {
-	sl, err := New().In("test-fixtures").Name("1.*").ToSlice()
-	if err != nil {
-		t.Fatal(err)
+	f := New().In("test-fixtures").Name("1.*")
+	if f.err != nil {
+		t.Fatal(f.err)
 	}
+	sl := f.ToSlice()
 	sl.Sort(ByExtension)
 	act := sl.ToStringSlice()
 	exp := []string{"test-fixtures/1.log", "test-fixtures/1.txt"}

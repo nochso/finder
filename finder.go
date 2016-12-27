@@ -30,7 +30,7 @@ type Finder struct {
 	userFilters []Matcher
 	maxDepth    int // maximum possible depth
 	depths      []Matcher
-	setupErrors []error
+	err         MultiErr
 	itype       itemType
 }
 
@@ -40,6 +40,8 @@ type Matcher func(Item) bool
 // New returns a new finder.
 //
 // By default it will search for both files and directories.
+//
+// Any errors that occur during setup or walking are collected in `Finder.Error()`.
 func New() *Finder {
 	return &Finder{}
 }
@@ -77,7 +79,7 @@ func (f *Finder) NotPath(p string) *Finder {
 func (f *Finder) path(p string) Matcher {
 	g, err := glob.Compile(p, os.PathSeparator)
 	if err != nil {
-		f.setupErrors = append(f.setupErrors, err)
+		f.err = append(f.err, err)
 		return nil
 	}
 	return func(i Item) bool {
@@ -102,7 +104,7 @@ func (f *Finder) Name(n string) *Finder {
 func (f *Finder) name(n string) Matcher {
 	g, err := glob.Compile(n, os.PathSeparator)
 	if err != nil {
-		f.setupErrors = append(f.setupErrors, err)
+		f.err = append(f.err, err)
 		return nil
 	}
 	return func(i Item) bool {
@@ -122,7 +124,7 @@ func (f *Finder) NameRegex(n string) *Finder {
 func (f *Finder) nameRegex(n string) Matcher {
 	re, err := regexp.Compile(n)
 	if err != nil {
-		f.setupErrors = append(f.setupErrors, err)
+		f.err = append(f.err, err)
 		return nil
 	}
 	return func(i Item) bool {
@@ -376,9 +378,16 @@ func (f *Finder) matchNotNames(i Item) error {
 	return isMatch
 }
 
+func (f *Finder) Error() MultiErr {
+	if len(f.err) == 0 {
+		return nil
+	}
+	return f.err
+}
+
 // Each calls func fn with each found item.
-func (f *Finder) Each(fn func(Item)) []error {
-	var errs []error
+// Any errors that occur while walking will be added to `Finder.Error()`.
+func (f *Finder) Each(fn func(Item)) {
 	var dir string
 	walker := func(path string, info os.FileInfo, err error) error {
 		if dir == path {
@@ -407,17 +416,17 @@ func (f *Finder) Each(fn func(Item)) []error {
 	for _, dir = range f.dirs {
 		err := filepath.Walk(dir, walker)
 		if err != nil && err != errSkipDir {
-			errs = append(errs, err)
+			f.err = append(f.err, err)
 		}
 	}
-	return append(f.setupErrors, errs...)
 }
 
 // ToSlice returns a slice of all found items.
-func (f *Finder) ToSlice() (ItemSlice, []error) {
+// Any errors that occur while walking will be added to `Finder.Error()`.
+func (f *Finder) ToSlice() ItemSlice {
 	var l []Item
-	errs := f.Each(func(file Item) {
+	f.Each(func(file Item) {
 		l = append(l, file)
 	})
-	return l, errs
+	return l
 }

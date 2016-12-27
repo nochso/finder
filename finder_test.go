@@ -2,6 +2,7 @@ package finder
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 )
 
@@ -19,9 +20,9 @@ type testCase struct {
 
 // Test runs a single test case.
 func (tc testCase) Test(t *testing.T) {
-	files, errs := tc.finder.ToSlice()
-	if len(errs) > 0 {
-		t.Fatal(errs)
+	files := tc.finder.ToSlice()
+	if tc.finder.Error() != nil {
+		t.Fatal(tc.finder.Error())
 	}
 	err := matchFiles(t, tc.paths, files)
 	if err != nil {
@@ -99,6 +100,17 @@ func TestFinder_Path(t *testing.T) {
 		},
 	}
 	test(t, tests)
+}
+
+func TestFinder_Error(t *testing.T) {
+	f := New().Path("[").Name("[").NameRegex("[")
+	if f.Error() == nil {
+		t.Fatal("expecting error, got nil")
+	}
+	re := regexp.MustCompile(`(?s)1\..*2\..*3\.`)
+	if !re.MatchString(f.Error().Error()) {
+		t.Fatalf("expected output to match regexp %#v; got %#v", re.String(), f.Error().Error())
+	}
 }
 
 func TestFinder_NotPath(t *testing.T) {

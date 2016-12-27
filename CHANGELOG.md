@@ -15,12 +15,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - New method `ItemSlice.Sort(func (i, j Item) bool)` sorts the slice given a function that mimics `Less` of `sort.Interface`.
 - Common functions for `Sort()`: `ByName`, `ByPath`, `ByModified`, `BySize` and `ByExtension`.
 - New method `ItemSlice.ToStringSlice()` returns a string slice of paths.
+- New method `Finder.Error()` returns a `MultiErr` containing all errors that
+  occured during setup or walking.
 
 
 ### Changed
 
 - Completely skip folders that are deeper than the maximum depth. Restores
   behaviour of `<=0.1.0`, reducing time for shallow scans in nested directories.
+- `Each` and `ToSlice` no longer return an error slice. Instead a `MultiErr` is
+  available via method `Finder.Error()`
 
 
 ### Fixed
