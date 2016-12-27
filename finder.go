@@ -1,3 +1,4 @@
+// Package finder provides a fluent interface around Go's path/filepath.Walk
 package finder
 
 import (
